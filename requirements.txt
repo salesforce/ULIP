@@ -1,0 +1,7 @@
+easydict==1.9
+timm==0.4.12
+ftfy==6.0.1
+regex==2022.10.31
+pyyaml_env_tag==0.1
+h5py==3.6.0
+open3d==0.16.0

@@ -9,6 +9,9 @@ Official implementation of ['ULIP: Learning Unified Representation of Language, 
 
 [Project Website](https://tycho-xue.github.io/ULIP/)
 
+# News
+ULIP has been accepted by CVPR 2023! 🔥🔥🔥
+
 # Animation
 ![Pipeline Animation](pipeline_8s_timing.gif)
 
@@ -24,9 +27,58 @@ The recognition capabilities of current state-of-the-art 3D models are limited b
 
 [comment]: <> (---)
 
-# Code
-Code will come soon, we are working hard on the code releasing now, thanks for the waiting.
+# Instructions
+ULIP is a highly extensible multimodal pre-training framework, and it's model-architecture agnostic, meaning you can easily plug in any 3D backbone models and pre-train it using our framework to get a jump-start for various downstreaming tasks!
+## 【Install environments】
+We pre-train ULIP on 8 Nvidia A100 GPUs, the code is tested with CUDA==11.0 and pytorch==1.10.1\
+```conda create -n ulip python=3.7.15``` \
+```conda activate ulip``` \
+```conda install pytorch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1 cudatoolkit=11.3 -c pytorch -c conda-forge``` \
+```pip install -r requirements.txt```
 
+## 【Download datasets and initialize models, put them in the right paths.】
+Download the used datasets and initialize models from [here](https://console.cloud.google.com/storage/browser/sfr-ulip-code-release-research). For now, you ONLY need to download "initialize_models", "modelnet40_normal_resampled", and "shapenet-55". You might need a gmail account to access it.\
+After you download the datasets and initialize models, you can choose one of the following options: \
+(1) Put it in or do a soft link to the data folder, by default the data folder should have the following structure: \
+```
+./data |
+-- ModelNet40.yaml |
+-- ShapeNet-55.yaml |
+-- dataset_3d.py |
+-- dataset_catalog.json |
+-- initialize_models |
+-- labels.json |
+-- modelnet40_normal_resampled |
+-- shapenet-55 |
+-- templates.json
+```
+(2) Change the paths accordingly (optional to do if you don't want to put/link downloaded files in the data folder):
+```
+# Change the "DATA_PATH", "PC_PATH", "IMAGE_PATH"
+./data/ShapeNet-55.yaml
+# Change the "DATA_PATH"
+./data/ModelNet40.yaml
+# Change the initialize_models address
+./models/ULIP_models.py
+Modify this line "pretrain_slip_model = torch.load('./data/initialize_models/slip_base_100ep.pt', map_location=torch.device('cpu'))"
+```
+
+
+## 【Reproduce ULIP + Pointnet2(SSG)】
+Please change the script to accommodate your system accordingly, this script is used to pre-train on 8 gpus by default. You can also modify the desired output folder in the script.
+```
+bash pretrain.sh
+```
+## 【Pre-train your customized 3D backbones】
+There are only two things you need to change to pre-train your own customized 3D backbones: \
+(1) Define your own 3D backbone in ./models folder.\
+We put a template "customized_backbone" here, you can refer to the comments to see the expected input and output shapes. You can also refer to how pointnet2 is defined here. \
+(2) Use or modify this "ULIP_CUSTOMIZED" class in ./models/ULIP_models.py.\
+Please refer to the comments in "ULIP_CUSTOMIZED" class, it should be straightforward to follow, and please be sure to change the "pc_feat_dims" accordingly (since we are agnostic to the point cloud output feature dimensions of your customized 3D backbones).
+
+# Code Release
+We received many code-release requests, thus decided to opensource the pre-train part first to unblock people who want to use our framework. We plan to enrich the repo gradually.
+ 
 # Citation
 
     @article{xue2022ulip,
