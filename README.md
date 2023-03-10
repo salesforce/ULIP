@@ -5,7 +5,7 @@
 
 [comment]: <> (---)
 
-Official implementation of ['ULIP: Learning Unified Representation of Language, Image and Point Cloud for 3D Understanding'](https://arxiv.org/abs/2212.05171)
+Official implementation of [ULIP: Learning Unified Representation of Language, Image and Point Cloud for 3D Understanding](https://arxiv.org/abs/2212.05171)
 
 [Project Website](https://tycho-xue.github.io/ULIP/)
 
@@ -13,7 +13,7 @@ Official implementation of ['ULIP: Learning Unified Representation of Language, 
 ULIP has been accepted by CVPR 2023! 🔥🔥🔥
 
 # Animation
-![Pipeline Animation](pipeline_8s_timing.gif)
+![Pipeline Animation](assets/pipeline_8s_timing.gif)
 
 [comment]: <> (---)
 
@@ -23,20 +23,20 @@ The recognition capabilities of current state-of-the-art 3D models are limited b
 [comment]: <> (---)
 
 # Pipeline
-![Overall Pipeline](figure2_resize.gif)
+![Overall Pipeline](assets/figure2_resize.gif)
 
 [comment]: <> (---)
 
 # Instructions
 ULIP is a highly extensible multimodal pre-training framework, and it's model-architecture agnostic, meaning you can easily plug in any 3D backbone models and pre-train it using our framework to get a jump-start for various downstreaming tasks!
-## 【Install environments】
+## [Install environments]
 We pre-train ULIP on 8 Nvidia A100 GPUs, the code is tested with CUDA==11.0 and pytorch==1.10.1\
 ```conda create -n ulip python=3.7.15``` \
 ```conda activate ulip``` \
 ```conda install pytorch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1 cudatoolkit=11.3 -c pytorch -c conda-forge``` \
 ```pip install -r requirements.txt```
 
-## 【Download datasets and initialize models, put them in the right paths.】
+## [Download datasets and initialize models, put them in the right paths.]
 Download the used datasets and initialize models from [here](https://console.cloud.google.com/storage/browser/sfr-ulip-code-release-research). For now, you ONLY need to download "initialize_models", "modelnet40_normal_resampled", and "shapenet-55". You might need a gmail account to access it.\
 After you download the datasets and initialize models, you can choose one of the following options: \
 (1) Put it in or do a soft link to the data folder, by default the data folder should have the following structure: \
@@ -64,21 +64,35 @@ Modify this line "pretrain_slip_model = torch.load('./data/initialize_models/sli
 ```
 
 
-## 【Reproduce ULIP + Pointnet2(SSG)】
+## [Reproduce ULIP + Pointnet2(SSG)]
 Please change the script to accommodate your system accordingly, this script is used to pre-train on 8 gpus by default. You can also modify the desired output folder in the script.
 ```
 bash pretrain.sh
 ```
-## 【Pre-train your customized 3D backbones】
+## [Pre-train your customized 3D backbones]
 There are only two things you need to change to pre-train your own customized 3D backbones: \
 (1) Define your own 3D backbone in ./models folder.\
 We put a template "customized_backbone" here, you can refer to the comments to see the expected input and output shapes. You can also refer to how pointnet2 is defined here. \
 (2) Use or modify this "ULIP_CUSTOMIZED" class in ./models/ULIP_models.py.\
 Please refer to the comments in "ULIP_CUSTOMIZED" class, it should be straightforward to follow, and please be sure to change the "pc_feat_dims" accordingly (since we are agnostic to the point cloud output feature dimensions of your customized 3D backbones).
 
-# Code Release
-We received many code-release requests, thus decided to opensource the pre-train part first to unblock people who want to use our framework. We plan to enrich the repo gradually.
- 
+## [Test pre-trained Pointnet2(SSG) for zero-shot classification on ModelNet40]
+```
+bash test.sh /path/to/your/checkpoint.pt
+```
+You may also change the output path in the test.sh as well.
+
+# Pre-trained models
+Zero-shot classification on ModelNet40:
+
+| model              | top1 | top5 |
+|--------------------|------|------|
+| [Pointnet2(ssg)](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/checkpoint_pointnet2_ssg.pt) | 57.7 | 78.9 |
+
+# TODO
+More supported backbones will be released soon.
+
+
 # Citation
 
     @article{xue2022ulip,

@@ -60,6 +60,7 @@ def get_args_parser():
     parser.add_argument('--eval-freq', default=1, type=int)
     parser.add_argument('--disable-amp', action='store_true',
                         help='disable mixed-precision training (requires more memory and compute)')
+    parser.add_argument('--validate_hard', action='store_true')
     parser.add_argument('--resume', default='', type=str, help='path to resume from')
 
     # System
@@ -445,7 +446,7 @@ def test_zeroshot_3d(args):
     model = getattr(models, old_args.model)(args=args)
     model.cuda()
     model.load_state_dict(state_dict, strict=True)
-    print("=> loaded resume checkpoint '{}' (epoch {})".format(args.resume, ckpt['epoch']))
+    print("=> loaded resume checkpoint '{}'".format(args.test_ckpt_addr))
 
     tokenizer = SimpleTokenizer()
 
