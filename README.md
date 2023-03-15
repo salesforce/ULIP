@@ -34,12 +34,19 @@ We pre-train ULIP on 8 Nvidia A100 GPUs, the code is tested with CUDA==11.0 and 
 ```conda create -n ulip python=3.7.15``` \
 ```conda activate ulip``` \
 ```conda install pytorch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1 cudatoolkit=11.3 -c pytorch -c conda-forge``` \
-```pip install -r requirements.txt```
-
+```pip install -r requirements.txt```\
+\
+[optional] \
+If you want to pre-train PointNeXt, we embed a modified PointNeXt codebase inside the ./models/pointnext, please do the following to install it:
+```
+cd ./models/pointnext/PointNeXt \
+bash update.sh \
+bash install.sh \
+```
 ## [Download datasets and initialize models, put them in the right paths.]
 Download the used datasets and initialize models from [here](https://console.cloud.google.com/storage/browser/sfr-ulip-code-release-research). For now, you ONLY need to download "initialize_models", "modelnet40_normal_resampled", and "shapenet-55". You might need a gmail account to access it.\
 After you download the datasets and initialize models, you can choose one of the following options: \
-(1) Put it in or do a soft link to the data folder, by default the data folder should have the following structure: \
+(1) Put it in or do a soft link to the data folder, by default the data folder should have the following structure:
 ```
 ./data |
 -- ModelNet40.yaml |
@@ -64,11 +71,31 @@ Modify this line "pretrain_slip_model = torch.load('./data/initialize_models/sli
 ```
 
 
-## [Reproduce ULIP + Pointnet2(SSG)]
+## [Pre-train 3D backbones]
+**Our framework is model architecture agonistic, currently four 3D backbones are supported:** \
+**Pointnet2(ssg)**\
+**PointBERT**\
+**PointMLP**\
+**PointNeXt**\
+\
 Please change the script to accommodate your system accordingly, this script is used to pre-train on 8 gpus by default. You can also modify the desired output folder in the script.
 ```
-bash pretrain.sh
+# the scripts are named by its correspoinding 3D backbone name.
+bash ./scripts/(choose your pre-train script)
 ```
+
+## [Test pre-trained models for zero-shot classification on ModelNet40]
+You may also change the output path in the scripts as well.
+
+```
+bash ./scripts/(choose your test script) /path/to/your/checkpoint.pt
+```
+You may also change the output path in the scripts as well.
+
+## [Pre-train & Test using different number of points]
+Change the npoints argument in the scripts, by default its 8192. \
+**Note: Currently we use FPS to subsample the 8192 points, which might slow down the training speed. If you'd like, you can choose to cache or save the pre-processed datasets with different number of points to speed up your pre-training.**
+
 ## [Pre-train your customized 3D backbones]
 There are only two things you need to change to pre-train your own customized 3D backbones: \
 (1) Define your own 3D backbone in ./models folder.\
@@ -76,19 +103,16 @@ We put a template "customized_backbone" here, you can refer to the comments to s
 (2) Use or modify this "ULIP_CUSTOMIZED" class in ./models/ULIP_models.py.\
 Please refer to the comments in "ULIP_CUSTOMIZED" class, it should be straightforward to follow, and please be sure to change the "pc_feat_dims" accordingly (since we are agnostic to the point cloud output feature dimensions of your customized 3D backbones).
 
-## [Test pre-trained Pointnet2(SSG) for zero-shot classification on ModelNet40]
-```
-bash test.sh /path/to/your/checkpoint.pt
-```
-You may also change the output path in the test.sh as well.
 
-# Pre-trained models
-Zero-shot classification on ModelNet40:
+# Pre-trained models for zero-shot classification
+Zero-shot classification on ModelNet40, 8k points pre-train, 8k points test, best checkpoint:
 
-| model              | top1 | top5 |
-|--------------------|------|------|
-| [Pointnet2(ssg)](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/checkpoint_pointnet2_ssg.pt) | 57.7 | 78.9 |
-
+| model                                                                                                                                                                   | top1 | top5 |
+|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------|------|
+| [Pointnet2(ssg)](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/checkpoint_pointnet2_ssg.pt?authuser=0) | 57.7 | 78.9 |
+| [PointMLP](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/checkpoint_pointmlp.pt?authuser=0)            | 60.0 | 79.4 |
+| [PointBERT](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/checkpoint_pointbert.pt?authuser=0)          | 60.3 | 84.0 |
+| [PointNeXt](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/checkpoint_pointnext.pt?authuser=0)          | 56.2 | 77.0 |
 # TODO
 More supported backbones will be released soon.
 

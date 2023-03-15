@@ -39,6 +39,8 @@ def get_args_parser():
     parser.add_argument('--pretrain_dataset_prompt', default='shapenet_64', type=str)
     parser.add_argument('--validate_dataset_name', default='modelnet40', type=str)
     parser.add_argument('--validate_dataset_prompt', default='modelnet40_64', type=str)
+    parser.add_argument('--use_height', action='store_true', help='whether to use height informatio, by default enabled with PointNeXt.')
+    parser.add_argument('--npoints', default=8192, type=int, help='number of points used for pre-train and test.')
     # Model
     parser.add_argument('--model', default='ULIP_PN_SSG', type=str)
     # Training
@@ -60,7 +62,6 @@ def get_args_parser():
     parser.add_argument('--eval-freq', default=1, type=int)
     parser.add_argument('--disable-amp', action='store_true',
                         help='disable mixed-precision training (requires more memory and compute)')
-    parser.add_argument('--validate_hard', action='store_true')
     parser.add_argument('--resume', default='', type=str, help='path to resume from')
 
     # System
@@ -360,8 +361,6 @@ def test_zeroshot_3d_core(test_loader, model, tokenizer, args=None):
     with open(os.path.join("./data", 'labels.json')) as f:
         labels = json.load(f)[args.validate_dataset_name]
 
-    if args.validate_hard:
-        print("validate hard sets.")
 
     with torch.no_grad():
         text_features = []
@@ -443,10 +442,16 @@ def test_zeroshot_3d(args):
     # create model
     old_args = ckpt['args']
     print("=> creating model: {}".format(old_args.model))
-    model = getattr(models, old_args.model)(args=args)
-    model.cuda()
-    model.load_state_dict(state_dict, strict=True)
-    print("=> loaded resume checkpoint '{}'".format(args.test_ckpt_addr))
+    try:
+        model = getattr(models, old_args.model)(args=args)
+        model.cuda()
+        model.load_state_dict(state_dict, strict=True)
+        print("=> loaded resume checkpoint '{}'".format(args.test_ckpt_addr))
+    except:
+        model = getattr(models, args.model)(args=args)
+        model.cuda()
+        model.load_state_dict(state_dict, strict=True)
+        print("=> loaded resume checkpoint '{}'".format(args.test_ckpt_addr))
 
     tokenizer = SimpleTokenizer()
 

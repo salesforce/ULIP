@@ -161,11 +161,12 @@ sys.path.append(BASE_DIR)
 class ModelNet(data.Dataset):
     def __init__(self, config):
         self.root = config.DATA_PATH
-        self.npoints = config.N_POINTS
+        self.npoints = config.npoints
         self.use_normals = config.USE_NORMALS
         self.num_category = config.NUM_CATEGORY
         self.process_data = True
         self.uniform = True
+        self.generate_from_raw_data = False
         split = config.subset
         self.subset = config.subset
 
@@ -200,27 +201,39 @@ class ModelNet(data.Dataset):
 
         if self.process_data:
             if not os.path.exists(self.save_path):
-                print_log('Processing data %s (only running in the first time)...' % self.save_path, logger='ModelNet')
-                self.list_of_points = [None] * len(self.datapath)
-                self.list_of_labels = [None] * len(self.datapath)
+                # make sure you have raw data in the path before you enable generate_from_raw_data=True.
+                if self.generate_from_raw_data:
+                    print_log('Processing data %s (only running in the first time)...' % self.save_path, logger='ModelNet')
+                    self.list_of_points = [None] * len(self.datapath)
+                    self.list_of_labels = [None] * len(self.datapath)
 
-                for index in tqdm(range(len(self.datapath)), total=len(self.datapath)):
-                    fn = self.datapath[index]
-                    cls = self.classes[self.datapath[index][0]]
-                    cls = np.array([cls]).astype(np.int32)
-                    point_set = np.loadtxt(fn[1], delimiter=',').astype(np.float32)
+                    for index in tqdm(range(len(self.datapath)), total=len(self.datapath)):
+                        fn = self.datapath[index]
+                        cls = self.classes[self.datapath[index][0]]
+                        cls = np.array([cls]).astype(np.int32)
+                        point_set = np.loadtxt(fn[1], delimiter=',').astype(np.float32)
 
-                    if self.uniform:
-                        point_set = farthest_point_sample(point_set, self.npoints)
-                        print_log("uniformly sampled out {} points".format(self.npoints))
-                    else:
-                        point_set = point_set[0:self.npoints, :]
+                        if self.uniform:
+                            point_set = farthest_point_sample(point_set, self.npoints)
+                            print_log("uniformly sampled out {} points".format(self.npoints))
+                        else:
+                            point_set = point_set[0:self.npoints, :]
 
-                    self.list_of_points[index] = point_set
-                    self.list_of_labels[index] = cls
+                        self.list_of_points[index] = point_set
+                        self.list_of_labels[index] = cls
 
-                with open(self.save_path, 'wb') as f:
-                    pickle.dump([self.list_of_points, self.list_of_labels], f)
+                    with open(self.save_path, 'wb') as f:
+                        pickle.dump([self.list_of_points, self.list_of_labels], f)
+                else:
+                    # no pre-processed dataset found and no raw data found, then load 8192 points dataset then do fps after.
+                    self.save_path = os.path.join(self.root,
+                                                  'modelnet%d_%s_%dpts_fps.dat' % (
+                                                  self.num_category, split, 8192))
+                    print_log('Load processed data from %s...' % self.save_path, logger='ModelNet')
+                    print_log('since no exact points pre-processed dataset found and no raw data found, load 8192 pointd dataset first, then do fps to {} after, the speed is excepted to be slower due to fps...'.format(self.npoints), logger='ModelNet')
+                    with open(self.save_path, 'rb') as f:
+                        self.list_of_points, self.list_of_labels = pickle.load(f)
+
             else:
                 print_log('Load processed data from %s...' % self.save_path, logger='ModelNet')
                 with open(self.save_path, 'rb') as f:
@@ -233,7 +246,7 @@ class ModelNet(data.Dataset):
         self.shape_names = lines
 
         # TODO: disable for backbones except for PointNEXT!!!
-        self.use_height = False
+        self.use_height = config.use_height
 
     def __len__(self):
         return len(self.list_of_labels)
@@ -251,6 +264,9 @@ class ModelNet(data.Dataset):
                 point_set = farthest_point_sample(point_set, self.npoints)
             else:
                 point_set = point_set[0:self.npoints, :]
+
+        if  self.npoints < point_set.shape[0]:
+            point_set = farthest_point_sample(point_set, self.npoints)
 
         point_set[:, 0:3] = pc_normalize(point_set[:, 0:3])
         if not self.use_normals:
@@ -282,7 +298,7 @@ class ShapeNet(data.Dataset):
         self.data_root = config.DATA_PATH
         self.pc_path = config.PC_PATH
         self.subset = config.subset
-        self.npoints = config.N_POINTS
+        self.npoints = config.npoints
         self.tokenizer = config.tokenizer
         self.train_transform = config.train_transform
         self.id_map_addr = os.path.join(config.DATA_PATH, 'taxonomy.json')
@@ -336,7 +352,7 @@ class ShapeNet(data.Dataset):
         self.augment = True
         # =================================================
         # TODO: disable for backbones except for PointNEXT!!!
-        self.use_height = False
+        self.use_height = config.use_height
         # =================================================
 
         if self.augment:
@@ -524,7 +540,8 @@ class Dataset_3D():
         config.train_transform = self.train_transform
         config.pretrain_dataset_prompt = self.pretrain_dataset_prompt
         config.validate_dataset_prompt = self.validate_dataset_prompt
-        config.validate_hard = args.validate_hard
         config.args = args
+        config.use_height = args.use_height
+        config.npoints = args.npoints
         config_others = EasyDict({'subset': self.dataset_split, 'whole': True})
         self.dataset = build_dataset_from_cfg(config, config_others)

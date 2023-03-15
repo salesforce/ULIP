@@ -1,0 +1,1 @@
+CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python -m torch.distributed.launch --nproc_per_node=8 main.py --model ULIP_PN_NEXT --npoints 8192 --output-dir ./outputs/reproduce_pointnext_8kpts --lr 1e-3 --use_height
