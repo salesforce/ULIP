@@ -4,7 +4,7 @@ ninja==1.10.2.3
 gdown
 easydict==1.9
 PyYAML==6.0
-protobuf==3.19.4
+protobuf==3.19.5
 tensorboard==2.8.0
 termcolor==1.1.0
 tqdm==4.62.3
