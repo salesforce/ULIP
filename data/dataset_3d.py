@@ -350,6 +350,7 @@ class ShapeNet(data.Dataset):
 
         self.uniform = True
         self.augment = True
+        self.use_caption_templates = False
         # =================================================
         # TODO: disable for backbones except for PointNEXT!!!
         self.use_height = config.use_height
@@ -357,8 +358,6 @@ class ShapeNet(data.Dataset):
 
         if self.augment:
             print("using augmented point clouds.")
-
-        # self.template = "a point cloud model of {}."
 
     def pc_norm(self, pc):
         """ pc: NxC, return NxC """
@@ -406,9 +405,14 @@ class ShapeNet(data.Dataset):
         caption = random.choice(captions)
         captions = []
         tokenized_captions = []
-        for template in self.templates:
-            captions.append(template.format(caption))
+        if self.use_caption_templates:
+            for template in self.templates:
+                caption = template.format(caption)
+                captions.append(caption)
+                tokenized_captions.append(self.tokenizer(caption))
+        else:
             tokenized_captions.append(self.tokenizer(caption))
+
         tokenized_captions = torch.stack(tokenized_captions)
 
         picked_model_rendered_image_addr = self.rendered_image_addr + '/' +\
