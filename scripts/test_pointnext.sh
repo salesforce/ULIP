@@ -8,4 +8,4 @@ fi
 model_file=$1
 output_dir=./outputs/test_pointnext_8kpts
 
-CUDA_VISIBLE_DEVICES=0 python main.py --model ULIP_PN_NEXT --npoints 8192 --output-dir $output_dir --evaluate_3d --test_ckpt_addr $model_file 2>&1 | tee $output_dir/log.txt
+CUDA_VISIBLE_DEVICES=0 python main.py --model ULIP_PN_NEXT --npoints 8192 --output-dir $output_dir --evaluate_3d --test_ckpt_addr $model_file --use_height 2>&1 | tee $output_dir/log.txt
