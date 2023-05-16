@@ -2,15 +2,20 @@
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/ulip-learning-unified-representation-of/3d-point-cloud-classification-on-modelnet40)](https://paperswithcode.com/sota/3d-point-cloud-classification-on-modelnet40?p=ulip-learning-unified-representation-of)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/ulip-learning-unified-representation-of/3d-point-cloud-classification-on-scanobjectnn)](https://paperswithcode.com/sota/3d-point-cloud-classification-on-scanobjectnn?p=ulip-learning-unified-representation-of)
 
+# ULIP-2: Towards Scalable Multimodal Pre-training For 3D Understanding
+
 # ULIP: Learning a Unified Representation of Language, Images, and Point Clouds for 3D Understanding
 
 [comment]: <> (---)
+
+Official implementation of [ULIP-2: Towards Scalable Multimodal Pre-training For 3D Understanding](https://arxiv.org/abs/2305.08275)
 
 Official implementation of [ULIP: Learning a Unified Representation of Language, Images, and Point Clouds for 3D Understanding](https://arxiv.org/abs/2212.05171)
 
 [Project Website](https://tycho-xue.github.io/ULIP/)
 
 # News
+ULIP-2 has been released!
 ULIP has been accepted by CVPR 2023! 🔥🔥🔥
 
 # Animation
