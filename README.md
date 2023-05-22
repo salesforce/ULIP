@@ -127,7 +127,9 @@ More supported backbones will be released soon.
 
 # License and term of use for the released pre-train datasets
 The code is under https://github.com/salesforce/ULIP/blob/main/LICENSE.txt.
+
 The released "ULIP - Objaverse Triplets" is under https://opendatacommons.org/licenses/by/1-0/, consistent with Objaverse's license.
+
 The released "ULIP - ShapeNet Triplets" is under the terms of use from https://shapenet.org/terms, consistent with ShapeNet's terms of use.
 
 # Citation
