@@ -16,7 +16,9 @@ Official implementation of [ULIP: Learning a Unified Representation of Language,
 
 # News
 [05/22/2023] "ULIP - Objaverse Triplets" and "ULIP - ShapeNet Triplets" have been uploaded [here](https://console.cloud.google.com/storage/browser/sfr-ulip-code-release-research).
+
 [05/14/2023] ULIP-2 has been released!
+
 [02/28/2023] ULIP has been accepted by CVPR 2023! 🔥🔥🔥
 
 # Animation
