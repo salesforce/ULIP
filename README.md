@@ -15,8 +15,9 @@ Official implementation of [ULIP: Learning a Unified Representation of Language,
 [Project Website](https://tycho-xue.github.io/ULIP/)
 
 # News
-ULIP-2 has been released!
-ULIP has been accepted by CVPR 2023! 🔥🔥🔥
+[05/22/2023] "ULIP - Objaverse Triplets" and "ULIP - ShapeNet Triplets" have been uploaded [here](https://console.cloud.google.com/storage/browser/sfr-ulip-code-release-research).
+[05/14/2023] ULIP-2 has been released!
+[02/28/2023] ULIP has been accepted by CVPR 2023! 🔥🔥🔥
 
 # Animation
 ![Pipeline Animation](assets/pipeline_8s_timing.gif)
@@ -122,6 +123,10 @@ Zero-shot classification on ModelNet40, 8k points pre-train, 8k points test, bes
 # TODO
 More supported backbones will be released soon.
 
+# License and term of use for the released pre-train datasets
+The code is under https://github.com/salesforce/ULIP/blob/main/LICENSE.txt.
+The released "ULIP - Objaverse Triplets" is under https://opendatacommons.org/licenses/by/1-0/, consistent with Objaverse's license.
+The released "ULIP - ShapeNet Triplets" is under the terms of use from https://shapenet.org/terms, consistent with ShapeNet's terms of use.
 
 # Citation
 
@@ -131,6 +136,14 @@ More supported backbones will be released soon.
       journal={arXiv preprint arXiv:2212.05171},
       year={2022}
     }
+    @misc{xue2023ulip2,
+      title={ULIP-2: Towards Scalable Multimodal Pre-training for 3D Understanding}, 
+      author={Le Xue and Ning Yu and Shu Zhang and Junnan Li and Roberto Martín-Martín and Jiajun Wu and Caiming Xiong and Ran Xu and Juan Carlos Niebles and Silvio Savarese},
+      year={2023},
+      eprint={2305.08275},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
 
 # Contact
 If you have any question about this project, please contact [lxue@salesforce.com](lxue@salesforce.com)
