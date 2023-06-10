@@ -15,6 +15,10 @@ Official implementation of [ULIP: Learning a Unified Representation of Language,
 [Project Website](https://tycho-xue.github.io/ULIP/)
 
 # News
+[06/09/2023] "PointBERT ULIP-2 pretrained model released, please find it in the [here](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/pointbert_ULIP-2.pt)".
+
+[06/09/2023] A smaller version of "ULIP - ShapeNet Triplets" are released at [here](https://console.cloud.google.com/storage/browser/sfr-ulip-code-release-research/shapenet-55?pageState=(%22StorageObjectListTable%22:(%22f%22:%22%255B%255D%22))&prefix=&forceOnObjectsSortingFiltering=false), it's around 420GB now. Check this image folder "only_rgb_depth_images", you can choose to download this subset of rendered images, which are the exact images leveraged by ULIP instead of downloading the full "rendered_images" folder (more than 1TB).
+
 [05/22/2023] "ULIP - Objaverse Triplets" and "ULIP - ShapeNet Triplets" have been uploaded [here](https://console.cloud.google.com/storage/browser/sfr-ulip-code-release-research).
 
 [05/14/2023] ULIP-2 has been released!
@@ -122,6 +126,7 @@ Zero-shot classification on ModelNet40, 8k points pre-train, 8k points test, bes
 | [PointMLP](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/checkpoint_pointmlp.pt?authuser=0)            | 60.0 | 79.4 |
 | [PointBERT](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/checkpoint_pointbert.pt?authuser=0)          | 60.3 | 84.0 |
 | [PointNeXt](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/checkpoint_pointnext.pt?authuser=0)          | 56.2 | 77.0 |
+| [PointBERT_ULIP-2](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/pointbert_ULIP-2.pt) | 75.6 | 93.7 |
 # TODO
 More supported backbones will be released soon.
 
