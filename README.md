@@ -2,9 +2,9 @@
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/ulip-learning-unified-representation-of/3d-point-cloud-classification-on-modelnet40)](https://paperswithcode.com/sota/3d-point-cloud-classification-on-modelnet40?p=ulip-learning-unified-representation-of)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/ulip-learning-unified-representation-of/3d-point-cloud-classification-on-scanobjectnn)](https://paperswithcode.com/sota/3d-point-cloud-classification-on-scanobjectnn?p=ulip-learning-unified-representation-of)
 
-# ULIP-2: Towards Scalable Multimodal Pre-training For 3D Understanding
+# ULIP-2: Towards Scalable Multimodal Pre-training For 3D Understanding (CVPR2024)
 
-# ULIP: Learning a Unified Representation of Language, Images, and Point Clouds for 3D Understanding
+# ULIP: Learning a Unified Representation of Language, Images, and Point Clouds for 3D Understanding (CVPR2023)
 
 [comment]: <> (---)
 
@@ -15,6 +15,8 @@ Official implementation of [ULIP: Learning a Unified Representation of Language,
 [Project Website](https://tycho-xue.github.io/ULIP/)
 
 # News
+[02/26/2024] "[ULIP-2: Towards Scalable Multimodal Pre-training For 3D Understanding](https://arxiv.org/abs/2305.08275) is accepted to CVPR2024!"
+
 [06/09/2023] "PointBERT ULIP-2 pretrained model released, please find it in the [here](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/pointbert_ULIP-2.pt)".
 
 [06/09/2023] A smaller version of "ULIP - ShapeNet Triplets" are released at [here](https://console.cloud.google.com/storage/browser/sfr-ulip-code-release-research/shapenet-55?pageState=(%22StorageObjectListTable%22:(%22f%22:%22%255B%255D%22))&prefix=&forceOnObjectsSortingFiltering=false), it's around 420GB now. Check this image folder "only_rgb_depth_images", you can choose to download this subset of rendered images, which are the exact images leveraged by ULIP instead of downloading the full "rendered_images" folder (more than 1TB).
