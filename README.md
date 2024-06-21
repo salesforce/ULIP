@@ -15,6 +15,8 @@ Official implementation of [ULIP: Learning a Unified Representation of Language,
 [Project Website](https://tycho-xue.github.io/ULIP/)
 
 # News
+[06/20/2024] ULIP-2 upgraded pre-trained 3d backbone uploaded (scaled-up backbone, support colored point clouds) is released [here](https://storage.cloud.google.com/sfr-ulip-code-release-research/ULIP-2/models/ULIP-2-PointBERT-10k-colored-pc-pretrained.pt).
+
 [02/26/2024] "[ULIP-2: Towards Scalable Multimodal Pre-training For 3D Understanding](https://arxiv.org/abs/2305.08275) is accepted to CVPR2024!"
 
 [06/09/2023] "PointBERT ULIP-2 pretrained model released, please find it in the [here](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/pointbert_ULIP-2.pt)".
@@ -72,7 +74,8 @@ After you download the datasets and initialize models, you can choose one of the
 -- labels.json |
 -- modelnet40_normal_resampled |
 -- shapenet-55 |
--- templates.json
+-- templates.json|
+-- objaverse-lvis
 ```
 (2) Change the paths accordingly (optional to do if you don't want to put/link downloaded files in the data folder):
 ```
@@ -129,6 +132,33 @@ Zero-shot classification on ModelNet40, 8k points pre-train, 8k points test, bes
 | [PointBERT](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/checkpoint_pointbert.pt?authuser=0)          | 60.3 | 84.0 |
 | [PointNeXt](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/checkpoint_pointnext.pt?authuser=0)          | 56.2 | 77.0 |
 | [PointBERT_ULIP-2(xyz input)](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/pointbert_ULIP-2.pt) | 75.6 | 93.7 |
+
+
+# ULIP-2
+To ensure a fair comparison, we use the same test sets from modelnet40 and objaverse-lvis preprocessed by [OpenShape](https://github.com/Colin97/OpenShape_code?tab=readme-ov-file), which contains 10k colored point clouds. You can either follow openshape's repo to prepare the data, or download it from our bucket, we duplicated one copy for your convenience.
+
+Extra instructions for running ULIP-2 upgraded pre-trained models:\
+make sure open_clip is installed.\
+pip install open_clip_torch\
+download the [checkpoint](https://storage.cloud.google.com/sfr-ulip-code-release-research/ULIP-2/models/ULIP-2-PointBERT-10k-colored-pc-pretrained.pt)\
+for both the modelnet40 and objaverse-lvis, prepare the 10k colored point clouds test sets either from [OpenShape](https://github.com/Colin97/OpenShape_code?tab=readme-ov-file), or download a copy directly from our gcp bucket. By default, it expects a folder named objaverse-lvis in the data folder, the same structure as shown [here](sfr-ulip-code-release-research/ULIP-2/objaverse-lvis) in our gcp bucket, and [two more files](sfr-ulip-code-release-research/ULIP-2/modelnet40_10k_colored_pc) added to the modelnet40_normal_resampled folder under data folder.
+
+Running evaluation:\
+for 10k colored point clouds modelnet40 using ULIP-2:\
+bash scripts/test_ulip2_pointbert_modelnet40.sh /path/to/ckpt\
+for 10k colored point clouds objaverse-lvis using ULIP-2:\
+bash scripts/test_ulip2_pointbert_objaverse_lvis.sh ./ULIP-2-PointBERT-10k-colored-pc-pretrained.pt
+
+
+
+| model                                                                                                                                                                   | modelnet40 top1 | modelnet40 top5 | objaverse-lvis top1 | objaverse-lvis top5 |
+|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------|------| -|- |
+| [PointBERT_ULIP-2(10k_xyzrgb input_scaled_up)](https://storage.cloud.google.com/sfr-ulip-code-release-research/ULIP-2/models/ULIP-2-PointBERT-10k-colored-pc-pretrained.pt)(32.5M) | 84.1 | 97.3 | 50.6 | 79.1 |
+
+note that, during the clean-up of the code for the release, some randomness might have changed, we noticed a minor fluctuation in the performance using our current server, in our paper, the same model on modelnet40 (~2.5k samples) is 84.7 and 97.1, after cleaning it is 84.1 and 97.3; on objaverse-lvis (~46k samples), in the paper is 50.634 and 79.054, after the cleaning it is 50.629 and 79.052. Since objaverse-lvis has more samples and thus is more robust, we recommend using it for benchmarking.
+ 
+
+
 # TODO
 More supported backbones will be released soon.
 
