@@ -154,7 +154,13 @@ class Group(nn.Module):
             output: B G M 3
             center : B G 3
         '''
-        batch_size, num_points, _ = xyz.shape
+        batch_size, num_points, C = xyz.shape
+
+        if C > 3:
+            data = xyz
+            xyz = data[:, :, :3].contiguous()
+            rgb = data[:, :, 3:]
+
         # fps the centers out
         center = misc.fps(xyz, self.num_group)  # B G 3
         # knn to get the neighborhood
@@ -169,15 +175,21 @@ class Group(nn.Module):
         neighborhood = neighborhood.view(batch_size, self.num_group, self.group_size, 3).contiguous()
         # normalize
         neighborhood = neighborhood - center.unsqueeze(2)
+        
+        if C > 3:
+            neighborhood_rgb = rgb.view(batch_size * num_points, -1)[idx, :]
+            neighborhood_rgb = neighborhood_rgb.view(batch_size, self.num_group, self.group_size, -1).contiguous()
+            neighborhood = torch.cat((neighborhood, neighborhood_rgb), dim=-1)
+        
         return neighborhood, center
 
 
 class Encoder(nn.Module):
-    def __init__(self, encoder_channel):
+    def __init__(self, encoder_channel, input_dim=3):
         super().__init__()
         self.encoder_channel = encoder_channel
         self.first_conv = nn.Sequential(
-            nn.Conv1d(3, 128, 1),
+            nn.Conv1d(input_dim, 128, 1),
             nn.BatchNorm1d(128),
             nn.ReLU(inplace=True),
             nn.Conv1d(128, 256, 1)
@@ -195,8 +207,9 @@ class Encoder(nn.Module):
             -----------------
             feature_global : B G C
         '''
-        bs, g, n, _ = point_groups.shape
-        point_groups = point_groups.reshape(bs * g, n, 3)
+        bs, g, n, c = point_groups.shape
+        # TODO: changed to c from 3.
+        point_groups = point_groups.reshape(bs * g, n, c)
         # encoder
         feature = self.first_conv(point_groups.transpose(2, 1))  # BG 256 n
         feature_global = torch.max(feature, dim=2, keepdim=True)[0]  # BG 256 1
@@ -204,6 +217,7 @@ class Encoder(nn.Module):
         feature = self.second_conv(feature)  # BG 1024 n
         feature_global = torch.max(feature, dim=2, keepdim=False)[0]  # BG 1024
         return feature_global.reshape(bs, g, self.encoder_channel)
+
 
 
 class Decoder(nn.Module):

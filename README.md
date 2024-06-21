@@ -1,39 +1,24 @@
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/ulip-2-towards-scalable-multimodal-pre/3d-point-cloud-classification-on-scanobjectnn)](https://paperswithcode.com/sota/3d-point-cloud-classification-on-scanobjectnn?p=ulip-2-towards-scalable-multimodal-pre)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/ulip-learning-unified-representation-of/3d-point-cloud-classification-on-modelnet40)](https://paperswithcode.com/sota/3d-point-cloud-classification-on-modelnet40?p=ulip-learning-unified-representation-of)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/ulip-learning-unified-representation-of/3d-point-cloud-classification-on-scanobjectnn)](https://paperswithcode.com/sota/3d-point-cloud-classification-on-scanobjectnn?p=ulip-learning-unified-representation-of)
 
-# ULIP-2: Towards Scalable Multimodal Pre-training For 3D Understanding (CVPR2024)
-
-# ULIP: Learning a Unified Representation of Language, Images, and Point Clouds for 3D Understanding (CVPR2023)
+# ULIP: Learning Unified Representation of Language, Image and Point Cloud for 3D Understanding
 
 [comment]: <> (---)
 
-Official implementation of [ULIP-2: Towards Scalable Multimodal Pre-training For 3D Understanding](https://arxiv.org/abs/2305.08275)
-
-Official implementation of [ULIP: Learning a Unified Representation of Language, Images, and Point Clouds for 3D Understanding](https://arxiv.org/abs/2212.05171)
+Official implementation of [ULIP: Learning Unified Representation of Language, Image and Point Cloud for 3D Understanding](https://arxiv.org/abs/2212.05171)
 
 [Project Website](https://tycho-xue.github.io/ULIP/)
 
 # News
-[02/26/2024] "[ULIP-2: Towards Scalable Multimodal Pre-training For 3D Understanding](https://arxiv.org/abs/2305.08275) is accepted to CVPR2024!"
-
-[06/09/2023] "PointBERT ULIP-2 pretrained model released, please find it in the [here](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/pointbert_ULIP-2.pt)".
-
-[06/09/2023] A smaller version of "ULIP - ShapeNet Triplets" are released at [here](https://console.cloud.google.com/storage/browser/sfr-ulip-code-release-research/shapenet-55?pageState=(%22StorageObjectListTable%22:(%22f%22:%22%255B%255D%22))&prefix=&forceOnObjectsSortingFiltering=false), it's around 420GB now. Check this image folder "only_rgb_depth_images", you can choose to download this subset of rendered images, which are the exact images leveraged by ULIP instead of downloading the full "rendered_images" folder (more than 1TB).
-
-[05/22/2023] "ULIP - Objaverse Triplets" and "ULIP - ShapeNet Triplets" have been uploaded [here](https://console.cloud.google.com/storage/browser/sfr-ulip-code-release-research).
-
-[05/14/2023] ULIP-2 has been released!
-
-[02/28/2023] ULIP has been accepted by CVPR 2023! 🔥🔥🔥
+ULIP has been accepted by CVPR 2023! 🔥🔥🔥
 
 # Animation
 ![Pipeline Animation](assets/pipeline_8s_timing.gif)
 
 [comment]: <> (---)
 
-# What is ULIP
-ULIP is a Model-agnostic Multimodal Pre-training Framework, which can leverage information from other modalities (Images, Language) to improve the ability to understand 3D data without introducing any extra latency.
+# Abstract
+The recognition capabilities of current state-of-the-art 3D models are limited by datasets with a small number of annotated data and a pre-defined set of categories. In its 2D counterpart, recent advances have shown that similar problems can be significantly alleviated by employing knowledge from other modalities, such as language. Inspired by this, leveraging multimodal information for 3D modality could be promising to improve 3D understanding under the restricted data regime, but this line of research is not well studied. Therefore, we introduce ULIP to learn a unified representation of image, text, and 3D point cloud by pre-training with object triplets from the three modalities. To overcome the shortage of training triplets, ULIP leverages a pre-trained vision-language model that has already learned a common visual and textual space by training with massive image-text pairs. Then, ULIP learns a 3D representation space aligned with the common image-text space, using a small number of automatically synthesized triplets. ULIP is agnostic to 3D backbone networks and can easily be integrated into any 3D architecture. Experiments show that ULIP effectively improves the performance of multiple recent 3D backbones by simply pre-training them on ShapeNet55 using our framework, achieving state-of-the-art performance in both standard 3D classification and zero-shot 3D classification on ModelNet40 and ScanObjectNN. ULIP also improves the performance of PointMLP by around 3% in 3D classification on ScanObjectNN, and outperforms PointCLIP by 28.8% on top-1 accuracy for zero-shot 3D classification on ModelNet40. Our code and pre-trained models will be released.
 
 [comment]: <> (---)
 
@@ -128,16 +113,9 @@ Zero-shot classification on ModelNet40, 8k points pre-train, 8k points test, bes
 | [PointMLP](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/checkpoint_pointmlp.pt?authuser=0)            | 60.0 | 79.4 |
 | [PointBERT](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/checkpoint_pointbert.pt?authuser=0)          | 60.3 | 84.0 |
 | [PointNeXt](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/checkpoint_pointnext.pt?authuser=0)          | 56.2 | 77.0 |
-| [PointBERT_ULIP-2(xyz input)](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/pointbert_ULIP-2.pt) | 75.6 | 93.7 |
 # TODO
 More supported backbones will be released soon.
 
-# License and term of use for the released pre-train datasets
-The code is under https://github.com/salesforce/ULIP/blob/main/LICENSE.txt.
-
-The released "ULIP - Objaverse Triplets" is under https://opendatacommons.org/licenses/by/1-0/, consistent with Objaverse's license.
-
-The released "ULIP - ShapeNet Triplets" is under the terms of use from https://shapenet.org/terms, consistent with ShapeNet's terms of use.
 
 # Citation
 
@@ -147,14 +125,6 @@ The released "ULIP - ShapeNet Triplets" is under the terms of use from https://s
       journal={arXiv preprint arXiv:2212.05171},
       year={2022}
     }
-    @misc{xue2023ulip2,
-      title={ULIP-2: Towards Scalable Multimodal Pre-training for 3D Understanding}, 
-      author={Le Xue and Ning Yu and Shu Zhang and Junnan Li and Roberto Martín-Martín and Jiajun Wu and Caiming Xiong and Ran Xu and Juan Carlos Niebles and Silvio Savarese},
-      year={2023},
-      eprint={2305.08275},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
-}
 
 # Contact
 If you have any question about this project, please contact [lxue@salesforce.com](lxue@salesforce.com)

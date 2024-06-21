@@ -17,7 +17,7 @@ from data.dataset_3d import  *
 from models import losses
 from torch.nn.parameter import Parameter
 from easydict import EasyDict
-
+import open_clip
 
 class LayerNorm(nn.LayerNorm):
     """Subclass torch's LayerNorm to handle fp16."""
@@ -172,6 +172,64 @@ class ULIP_WITH_IMAGE(nn.Module):
             return {'text_embed': text_embed_all,
                     'pc_embed': pc_embed,
                     'logit_scale': self.logit_scale.exp()}
+            
+            
+class ULIP2_WITH_OPENCLIP(nn.Module):
+    def __init__(self, point_encoder, **kwargs):
+        # super().__init__(ssl_mlp_dim, ssl_emb_dim, **kwargs)
+        super().__init__()
+        kwargs = EasyDict(kwargs)
+
+        self.open_clip_model = kwargs.open_clip_model
+
+        self.logit_scale = nn.Parameter(torch.ones([]) * np.log(1 / 0.07))
+
+        self.point_encoder = point_encoder
+        
+        self.tokenizer = open_clip.get_tokenizer('ViT-bigG-14')
+
+        self.pc_projection = nn.Parameter(torch.empty(kwargs.pc_feat_dims, 1280))
+        nn.init.normal_(self.pc_projection, std=1280 ** -0.5)
+
+    def encode_image(self, image):
+        x = self.open_clip_model.encode_image(image)
+
+        return x
+
+    def encode_text(self, text):
+        x = self.open_clip_model.encode_text(text)
+
+        return x
+
+    def encode_pc(self, pc):
+        pc_feat = self.point_encoder(pc)
+        pc_embed = pc_feat @ self.pc_projection
+        return pc_embed
+
+    def forward(self, pc, text, image=None):
+
+        text_embed_all = []
+        for i in range(text.shape[0]):
+            text_for_one_sample = text[i]
+            text_embed = self.encode_text(text_for_one_sample)
+            text_embed = text_embed / text_embed.norm(dim=-1, keepdim=True)
+            text_embed = text_embed.mean(dim=0)
+            text_embed = text_embed / text_embed.norm(dim=-1, keepdim=True)
+            text_embed_all.append(text_embed)
+
+        text_embed_all = torch.stack(text_embed_all)
+        pc_embed = self.encode_pc(pc)
+        if image is not None:
+            image_embed = self.encode_image(image)
+            return {'text_embed': text_embed_all,
+                    'pc_embed': pc_embed,
+                    'image_embed': image_embed,
+                    'logit_scale': self.logit_scale.exp()}
+
+        else:
+            return {'text_embed': text_embed_all,
+                    'pc_embed': pc_embed,
+                    'logit_scale': self.logit_scale.exp()}
 
 
 def get_loss(args):
@@ -288,6 +346,26 @@ def ULIP_PointBERT(args):
             param.requires_grad = False
             print('load {} and freeze'.format(name))
             param.data.copy_(param_new)
+
+    return model
+
+def ULIP2_PointBERT_Colored(args):
+    print("Get openclip model:")
+    open_clip_model, _, preprocess = open_clip.create_model_and_transforms('ViT-bigG-14',
+                                                                          pretrained='laion2b_s39b_b160k')
+    open_clip_model.eval()
+    print("Finished loading the openclip model.")
+
+    # =====================================================================
+    # import the 3D backbone and specify the output point cloud feature dimension
+    from models.pointbert.point_encoder import PointTransformer, PointTransformer_Colored
+    config_addr = './models/pointbert/ULIP_2_PointBERT_10k_colored_pointclouds.yaml'
+    config = cfg_from_yaml_file(config_addr)
+    point_encoder = PointTransformer_Colored(config.model, args=args)
+    pc_feat_dims = 768
+    # =====================================================================
+
+    model = ULIP2_WITH_OPENCLIP(open_clip_model=open_clip_model, point_encoder=point_encoder, pc_feat_dims=pc_feat_dims)
 
     return model
 

@@ -169,6 +169,8 @@ class ModelNet(data.Dataset):
         self.generate_from_raw_data = False
         split = config.subset
         self.subset = config.subset
+        self.use_10k_pc = config.use_10k_pc
+        self.use_colored_pc = config.use_colored_pc
 
         if self.num_category == 10:
             self.catfile = os.path.join(self.root, 'modelnet10_shape_names.txt')
@@ -230,7 +232,8 @@ class ModelNet(data.Dataset):
                                                   'modelnet%d_%s_%dpts_fps.dat' % (
                                                   self.num_category, split, 8192))
                     print_log('Load processed data from %s...' % self.save_path, logger='ModelNet')
-                    print_log('since no exact points pre-processed dataset found and no raw data found, load 8192 pointd dataset first, then do fps to {} after, the speed is excepted to be slower due to fps...'.format(self.npoints), logger='ModelNet')
+                    if not self.use_10k_pc:
+                        print_log('since no exact points pre-processed dataset found and no raw data found, load 8192 pointd dataset first, if downsampling with fps to {} happens later, the speed is excepted to be slower due to fps...'.format(self.npoints), logger='ModelNet')
                     with open(self.save_path, 'rb') as f:
                         self.list_of_points, self.list_of_labels = pickle.load(f)
 
@@ -247,6 +250,12 @@ class ModelNet(data.Dataset):
 
         # TODO: disable for backbones except for PointNEXT!!!
         self.use_height = config.use_height
+        
+        if self.use_10k_pc and self.use_colored_pc:
+            self.modelnet_10k_colored_pc_file = 'data/modelnet40_normal_resampled/modelnet40_colored_10k_pc.npy'
+            self.modelnet_10k_rgb_data = np.load(self.modelnet_10k_colored_pc_file, allow_pickle=True)
+            with open('data/modelnet40_normal_resampled/modelnet40_test_split_10k_colored.json', 'r') as f:
+                self.cat_name = json.load(f)
 
     def __len__(self):
         return len(self.list_of_labels)
@@ -277,6 +286,16 @@ class ModelNet(data.Dataset):
             height_array = point_set[:, self.gravity_dim:self.gravity_dim + 1] - point_set[:,
                                                                             self.gravity_dim:self.gravity_dim + 1].min()
             point_set = np.concatenate((point_set, height_array), axis=1)
+
+        if self.use_10k_pc and self.use_colored_pc:
+            point_set = self.modelnet_10k_rgb_data[index]['xyz']
+            rgb_data = np.ones_like(point_set) * 0.4
+            point_set = np.concatenate([point_set, rgb_data], axis=1)
+            cat_name = self.cat_name[index]['category']
+            label = [self.shape_names.index(cat_name)]
+        elif self.use_colored_pc:
+            rgb_data = np.ones_like(point_set) * 0.4
+            point_set = np.concatenate([point_set, rgb_data], axis=1)
 
         return point_set, label[0]
 
@@ -432,6 +451,93 @@ class ShapeNet(data.Dataset):
 
     def __len__(self):
         return len(self.file_list)
+    
+@DATASETS.register_module()
+class Objaverse_Lvis_Colored(data.Dataset):
+    def __init__(self, config):
+
+        self.npoints = 10000
+        self.tokenizer = config.tokenizer
+        self.train_transform = config.train_transform
+
+        self.lvis_list_addr = 'data/objaverse-lvis/lvis.json'
+        self.lvis_metadata_addr = 'data/objaverse-lvis/objaverse_lvis_metadata.json'
+
+        with open(self.lvis_list_addr, 'r') as f:
+            self.npy_file_map = json.load(f)
+
+        self.file_list = list(self.npy_file_map.keys())
+
+        with open(self.lvis_metadata_addr, 'r') as f:
+            self.lvis_metadata = json.load(f)
+
+        self.prompt_template_addr = 'data/templates.json'
+        with open(self.prompt_template_addr) as f:
+            self.templates = json.load(f)[config.pretrain_dataset_prompt]
+
+        self.sample_points_num = self.npoints
+
+        print_log(f'Objaverse lvis {len(self.file_list)} instances were loaded', logger='objaverse_lvis')
+
+        self.permutation = np.arange(self.npoints)
+
+        # =================================================
+        # TODO: disable for backbones except for PointNEXT!!!
+        self.use_height = False
+        self.use_color = True
+        
+        self.objaverse_lvis_path = 'data/objaverse-lvis'
+        
+        if self.use_color:
+            print("use color")
+        else:
+            print("don't use color")
+
+    def pc_norm(self, pc):
+        """ pc: NxC, return NxC """
+        centroid = np.mean(pc, axis=0)
+        pc = pc - centroid
+        m = np.max(np.sqrt(np.sum(pc ** 2, axis=1)))
+        pc = pc / m
+        return pc
+
+    def random_sample(self, pc, num):
+        np.random.shuffle(self.permutation)
+        pc = pc[self.permutation[:num]]
+        return pc
+
+    def __getitem__(self, idx):
+
+        sample = self.file_list[idx]
+        pc_addr = self.npy_file_map[sample]
+        pc_addr = os.path.join(self.objaverse_lvis_path,self.npy_file_map[sample])
+        data = np.load(pc_addr, allow_pickle=True)
+        dict_data = data.item()
+        xyz_data = dict_data['xyz']
+        rgb_data = dict_data['rgb']
+
+        data = self.pc_norm(xyz_data)
+        if self.use_color:
+            data = np.concatenate([data, rgb_data], axis=1)
+
+        if self.use_height:
+            self.gravity_dim = 1
+            height_array = data[:, self.gravity_dim:self.gravity_dim + 1] - data[:,
+                                                                       self.gravity_dim:self.gravity_dim + 1].min()
+            data = np.concatenate((data, height_array), axis=1)
+            data = torch.from_numpy(data).float()
+        else:
+            data = torch.from_numpy(data).float()
+
+        data = data.contiguous()
+
+        name = self.lvis_metadata["value_to_key_mapping"][sample]
+        label = self.lvis_metadata["key_to_id"][name]
+
+        return data, label, name
+
+    def __len__(self):
+        return len(self.file_list)
 
 import collections.abc as container_abcs
 int_classes = int
@@ -536,6 +642,14 @@ class Dataset_3D():
         self.train_transform = train_transform
         self.pretrain_dataset_prompt = args.pretrain_dataset_prompt
         self.validate_dataset_prompt = args.validate_dataset_prompt
+        if 'colored' in args.model.lower():
+            self.use_colored_pc = True
+        else:
+            self.use_colored_pc = False
+        if args.npoints == 10000:
+            self.use_10k_pc = True
+        else:
+            self.use_10k_pc = False
         self.build_3d_dataset(args, self.dataset_config_dir)
 
     def build_3d_dataset(self, args, config):
@@ -547,5 +661,7 @@ class Dataset_3D():
         config.args = args
         config.use_height = args.use_height
         config.npoints = args.npoints
+        config.use_colored_pc = self.use_colored_pc
+        config.use_10k_pc = self.use_10k_pc
         config_others = EasyDict({'subset': self.dataset_split, 'whole': True})
         self.dataset = build_dataset_from_cfg(config, config_others)

@@ -68,7 +68,8 @@ def get_args_parser():
     parser.add_argument('--print-freq', default=10, type=int, help='print frequency')
     parser.add_argument('-j', '--workers', default=10, type=int, metavar='N',
                         help='number of data loading workers per process')
-    parser.add_argument('--evaluate_3d', action='store_true', help='eval 3d only')
+    parser.add_argument('--evaluate_3d', action='store_true', help='eval ulip only')
+    parser.add_argument('--evaluate_3d_ulip2', action='store_true', help='eval ulip2 only')
     parser.add_argument('--world-size', default=1, type=int,
                         help='number of nodes for distributed training')
     parser.add_argument('--rank', default=0, type=int,
@@ -102,6 +103,10 @@ def main(args):
 
     if args.evaluate_3d:
         zero_stats = test_zeroshot_3d(args)
+        print(zero_stats)
+        return
+    elif args.evaluate_3d_ulip2:
+        zero_stats = test_zeroshot_3d_ulip2(args)
         print(zero_stats)
         return
 
@@ -358,9 +363,11 @@ def test_zeroshot_3d_core(test_loader, model, tokenizer, args=None):
     with open(os.path.join("./data", 'templates.json')) as f:
         templates = json.load(f)[args.validate_dataset_prompt]
 
-    with open(os.path.join("./data", 'labels.json')) as f:
-        labels = json.load(f)[args.validate_dataset_name]
-
+    if 'objaverse' in args.validate_dataset_name.lower():
+        labels = test_loader.dataset.lvis_metadata['all_keys']
+    else:
+        with open(os.path.join("./data", 'labels.json')) as f:
+            labels = json.load(f)[args.validate_dataset_name]
 
     with torch.no_grad():
         text_features = []
@@ -425,9 +432,9 @@ def test_zeroshot_3d_core(test_loader, model, tokenizer, args=None):
 
         top1_accuracy_per_class = collections.OrderedDict(top1_accuracy_per_class)
         top5_accuracy_per_class = collections.OrderedDict(top5_accuracy_per_class)
-        print(','.join(top1_accuracy_per_class.keys()))
-        print(','.join([str(value) for value in top1_accuracy_per_class.values()]))
-        print(','.join([str(value) for value in top5_accuracy_per_class.values()]))
+        # print(','.join(top1_accuracy_per_class.keys()))
+        # print(','.join([str(value) for value in top1_accuracy_per_class.values()]))
+        # print(','.join([str(value) for value in top5_accuracy_per_class.values()]))
 
     progress.synchronize()
     print('0-shot * Acc@1 {top1.avg:.3f} Acc@5 {top5.avg:.3f}')
@@ -439,19 +446,43 @@ def test_zeroshot_3d(args):
     for k, v in ckpt['state_dict'].items():
         state_dict[k.replace('module.', '')] = v
 
-    # create model
-    old_args = ckpt['args']
-    print("=> creating model: {}".format(old_args.model))
     try:
+        old_args = ckpt['args']
         model = getattr(models, old_args.model)(args=args)
         model.cuda()
         model.load_state_dict(state_dict, strict=True)
+        print("=> creating model: {}".format(old_args.model))
         print("=> loaded resume checkpoint '{}'".format(args.test_ckpt_addr))
     except:
         model = getattr(models, args.model)(args=args)
         model.cuda()
         model.load_state_dict(state_dict, strict=True)
+        print("=> creating model: {}".format(args.model))
         print("=> loaded resume checkpoint '{}'".format(args.test_ckpt_addr))
+
+    tokenizer = SimpleTokenizer()
+
+    test_dataset = get_dataset(None, tokenizer, args, 'val')
+    test_loader = torch.utils.data.DataLoader(
+        test_dataset, batch_size=args.batch_size, shuffle=False,
+        num_workers=args.workers, pin_memory=True, sampler=None, drop_last=False
+    )
+    results = test_zeroshot_3d_core(test_loader, model, tokenizer, args)
+
+    return results
+
+def test_zeroshot_3d_ulip2(args):
+    ckpt = torch.load(args.test_ckpt_addr, map_location='cpu')
+    state_dict = OrderedDict()
+    for k, v in ckpt['state_dict'].items():
+        state_dict[k.replace('module.', '')] = v
+
+    print("=> creating model: {}".format(args.model))
+
+    model = getattr(models, args.model)(args=args)
+    model.cuda()
+    model.load_state_dict(state_dict, strict=False)
+    print("=> loaded pretrained checkpoint '{}'".format(args.test_ckpt_addr))
 
     tokenizer = SimpleTokenizer()
 
