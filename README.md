@@ -15,7 +15,7 @@ Official implementation of [ULIP: Learning a Unified Representation of Language,
 [Project Website](https://tycho-xue.github.io/ULIP/)
 
 # News
-[06/20/2024] ULIP-2 upgraded pre-trained 3d backbone uploaded (scaled-up backbone, support colored point clouds) is released [here](https://storage.cloud.google.com/sfr-ulip-code-release-research/ULIP-2/models/ULIP-2-PointBERT-10k-colored-pc-pretrained.pt).
+[06/20/2024] ULIP-2 upgraded pre-trained 3d backbone uploaded **(scaled-up backbone, support colored point clouds)** is released [here](https://storage.cloud.google.com/sfr-ulip-code-release-research/ULIP-2/models/ULIP-2-PointBERT-10k-colored-pc-pretrained.pt).
 
 [02/26/2024] "[ULIP-2: Towards Scalable Multimodal Pre-training For 3D Understanding](https://arxiv.org/abs/2305.08275) is accepted to CVPR2024!"
 
