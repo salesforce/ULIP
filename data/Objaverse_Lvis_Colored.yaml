@@ -1,0 +1,4 @@
+NAME: Objaverse_Lvis_Colored
+DATA_PATH: /export/einstein-vision-hs/3d_vision/objaverse
+N_POINTS: 10000
+PC_PATH: /export/einstein-vision-hs/3d_vision/objaverse/objaverse_pc_parallel
