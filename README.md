@@ -15,6 +15,7 @@ Official implementation of [ULIP: Learning a Unified Representation of Language,
 [Project Website](https://tycho-xue.github.io/ULIP/)
 
 # News
+[06/17/2024] "[ULIP-2: Towards Scalable Multimodal Pre-training For 3D Understanding](https://arxiv.org/abs/2305.08275) the cvpr2024 version (latest) of the ensembled pre-trained model with 10k xyzrgb points is uploaded [here](https://storage.cloud.google.com/sfr-ulip-code-release-research/ULIP-2/models/ULIP-2-PointBERT-10k-colored-pc-pretrained.pt)"
 [02/26/2024] "[ULIP-2: Towards Scalable Multimodal Pre-training For 3D Understanding](https://arxiv.org/abs/2305.08275) is accepted to CVPR2024!"
 
 [06/09/2023] "PointBERT ULIP-2 pretrained model released, please find it in the [here](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/pointbert_ULIP-2.pt)".
@@ -120,7 +121,7 @@ Please refer to the comments in "ULIP_CUSTOMIZED" class, it should be straightfo
 
 
 # Pre-trained models for zero-shot classification
-Zero-shot classification on ModelNet40, 8k points pre-train, 8k points test, best checkpoint:
+ULIP-1 models, Zero-shot classification on ModelNet40, 8k points pre-train, 8k points test, best checkpoint:
 
 | model                                                                                                                                                                   | top1 | top5 |
 |-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------|------|
@@ -128,9 +129,15 @@ Zero-shot classification on ModelNet40, 8k points pre-train, 8k points test, bes
 | [PointMLP](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/checkpoint_pointmlp.pt?authuser=0)            | 60.0 | 79.4 |
 | [PointBERT](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/checkpoint_pointbert.pt?authuser=0)          | 60.3 | 84.0 |
 | [PointNeXt](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/checkpoint_pointnext.pt?authuser=0)          | 56.2 | 77.0 |
-| [PointBERT_ULIP-2(xyz input)](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/pointbert_ULIP-2.pt) | 75.6 | 93.7 |
-# TODO
-More supported backbones will be released soon.
+
+ULIP-2 models, pre-trained with 10k xyzrgb point clouds on the ensembled ULIP-Objaverse + ULIP-ShapeNet, check the [google drive]([sfr-ulip-code-release-research/ULIP-Objaverse_triplets](https://console.cloud.google.com/storage/browser/sfr-ulip-code-release-research/ULIP-Objaverse_triplets?pageState=(%22StorageObjectListTable%22:(%22f%22:%22%255B%255D%22)))).
+
+Note that, ULIP-2 models are improved in the CVPR2024 version compared to the initial arxiv release, please refer to the new one for matching the cvpr2024 version numbers.
+
+| model                                                                                                                                                                   | Objaverse-top1 | Objaverse-top5 | Modelnet40-top1 | Modelnet40-top5 |
+|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------|------| - | - |
+|openshape-pointbert-10kxyzrgb-ensembled-objavserse-shapenet-abo-3d_future| 46.8 | 77.0 | 84.4 | 98.0 |
+| [ULIP2-PointBERT-10kxyzrgb-ensembled-objaverse-shapenet](https://storage.cloud.google.com/sfr-ulip-code-release-research/ULIP-2/models/ULIP-2-PointBERT-10k-colored-pc-pretrained.pt) | 50.6 | 79.1 | 84.7 | 97.1 |
 
 # License and term of use for the released pre-train datasets
 The code is under https://github.com/salesforce/ULIP/blob/main/LICENSE.txt.
@@ -140,21 +147,21 @@ The released "ULIP - Objaverse Triplets" is under https://opendatacommons.org/li
 The released "ULIP - ShapeNet Triplets" is under the terms of use from https://shapenet.org/terms, consistent with ShapeNet's terms of use.
 
 # Citation
-
-    @article{xue2022ulip,
-      title={ULIP: Learning Unified Representation of Language, Image and Point Cloud for 3D Understanding},
-      author={Xue, Le and Gao, Mingfei and Xing, Chen and Mart{\'\i}n-Mart{\'\i}n, Roberto and Wu, Jiajun and Xiong, Caiming and Xu, Ran and Niebles, Juan Carlos and Savarese, Silvio},
-      journal={arXiv preprint arXiv:2212.05171},
-      year={2022}
-    }
-    @misc{xue2023ulip2,
-      title={ULIP-2: Towards Scalable Multimodal Pre-training for 3D Understanding}, 
-      author={Le Xue and Ning Yu and Shu Zhang and Junnan Li and Roberto Martín-Martín and Jiajun Wu and Caiming Xiong and Ran Xu and Juan Carlos Niebles and Silvio Savarese},
-      year={2023},
-      eprint={2305.08275},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
+```bibtex
+@inproceedings{xue2023ulip,
+  title={Ulip: Learning a unified representation of language, images, and point clouds for 3d understanding},
+  author={Xue, Le and Gao, Mingfei and Xing, Chen and Mart{\'\i}n-Mart{\'\i}n, Roberto and Wu, Jiajun and Xiong, Caiming and Xu, Ran and Niebles, Juan Carlos and Savarese, Silvio},
+  booktitle={Proceedings of the IEEE/CVF conference on computer vision and pattern recognition},
+  pages={1179--1189},
+  year={2023}
 }
+@inproceedings{xue2024ulip,
+  title={Ulip-2: Towards scalable multimodal pre-training for 3d understanding},
+  author={Xue, Le and Yu, Ning and Zhang, Shu and Panagopoulou, Artemis and Li, Junnan and Mart{\'\i}n-Mart{\'\i}n, Roberto and Wu, Jiajun and Xiong, Caiming and Xu, Ran and Niebles, Juan Carlos and others},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={27091--27101},
+  year={2024}}
+
 
 # Contact
 If you have any question about this project, please contact [lxue@salesforce.com](lxue@salesforce.com)
