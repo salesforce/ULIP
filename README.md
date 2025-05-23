@@ -15,6 +15,7 @@ Official implementation of [ULIP: Learning a Unified Representation of Language,
 [Project Website](https://tycho-xue.github.io/ULIP/)
 
 # News
+[05/23/2025] Due to the new policy from GCP bucket, all the ULIP series resources are reuploaded in huggingface [https://huggingface.co/datasets/SFXX/ulip/tree/main] (https://huggingface.co/datasets/SFXX/ulip/tree/main), please check it out if you can't download from the GCP bucket.
 [06/17/2024] "[ULIP-2: Towards Scalable Multimodal Pre-training For 3D Understanding](https://arxiv.org/abs/2305.08275) the cvpr2024 version (latest) of the ensembled pre-trained model with 10k xyzrgb points is uploaded [here](https://storage.cloud.google.com/sfr-ulip-code-release-research/ULIP-2/models/ULIP-2-PointBERT-10k-colored-pc-pretrained.pt)"
 [02/26/2024] "[ULIP-2: Towards Scalable Multimodal Pre-training For 3D Understanding](https://arxiv.org/abs/2305.08275) is accepted to CVPR2024!"
 
