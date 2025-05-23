@@ -14,20 +14,35 @@ Official implementation of [ULIP: Learning a Unified Representation of Language,
 
 [Project Website](https://tycho-xue.github.io/ULIP/)
 
-# News
-[05/23/2025] "Due to the new policy from GCP bucket, all the ULIP series resources are reuploaded in huggingface [https://huggingface.co/datasets/SFXX/ulip/tree/main](https://huggingface.co/datasets/SFXX/ulip/tree/main), please check it out if you can't download from the GCP bucket."
-[06/17/2024] "[ULIP-2: Towards Scalable Multimodal Pre-training For 3D Understanding](https://arxiv.org/abs/2305.08275) the cvpr2024 version (latest) of the ensembled pre-trained model with 10k xyzrgb points is uploaded [here](https://storage.cloud.google.com/sfr-ulip-code-release-research/ULIP-2/models/ULIP-2-PointBERT-10k-colored-pc-pretrained.pt)"
-[02/26/2024] "[ULIP-2: Towards Scalable Multimodal Pre-training For 3D Understanding](https://arxiv.org/abs/2305.08275) is accepted to CVPR2024!"
+# 📰 News
 
-[06/09/2023] "PointBERT ULIP-2 pretrained model released, please find it in the [here](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/pointbert_ULIP-2.pt)".
+### 📢 [**05/23/2025**] Major Update: ULIP Resources Moved to Hugging Face!
+Due to a new policy on Google Cloud Storage, **all ULIP-series datasets and models** have been reuploaded to Hugging Face:
+👉 [**https://huggingface.co/datasets/SFXX/ulip**](https://huggingface.co/datasets/SFXX/ulip/tree/main)
 
-[06/09/2023] A smaller version of "ULIP - ShapeNet Triplets" are released at [here](https://console.cloud.google.com/storage/browser/sfr-ulip-code-release-research/shapenet-55?pageState=(%22StorageObjectListTable%22:(%22f%22:%22%255B%255D%22))&prefix=&forceOnObjectsSortingFiltering=false), it's around 420GB now. Check this image folder "only_rgb_depth_images", you can choose to download this subset of rendered images, which are the exact images leveraged by ULIP instead of downloading the full "rendered_images" folder (more than 1TB).
+If you're unable to download from the GCP bucket, please switch to Hugging Face for continued access and updates.
 
-[05/22/2023] "ULIP - Objaverse Triplets" and "ULIP - ShapeNet Triplets" have been uploaded [here](https://console.cloud.google.com/storage/browser/sfr-ulip-code-release-research).
+---
 
-[05/14/2023] ULIP-2 has been released!
+### 🗓️ [06/17/2024] [ULIP-2: Towards Scalable Multimodal Pre-training For 3D Understanding](https://arxiv.org/abs/2305.08275)
+📦 The latest **CVPR 2024** version of the ensembled pre-trained model (10k xyzrgb points) is now available [here](https://storage.cloud.google.com/sfr-ulip-code-release-research/ULIP-2/models/ULIP-2-PointBERT-10k-colored-pc-pretrained.pt)
 
-[02/28/2023] ULIP has been accepted by CVPR 2023! 🔥🔥🔥
+### 🗓️ [02/26/2024] ULIP-2 Accepted to CVPR 2024 🎉
+
+### 🗓️ [06/09/2023] PointBERT ULIP-2 Model Released  
+🔗 [Download here](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/pointbert_ULIP-2.pt)
+
+### 🗓️ [06/09/2023] Smaller Version of ULIP - ShapeNet Triplets Released  
+A 420GB subset is available at [this GCP link](https://console.cloud.google.com/storage/browser/sfr-ulip-code-release-research/shapenet-55), under the `only_rgb_depth_images` folder — the exact subset used by ULIP.  
+Skip downloading the full rendered_images (~1TB) if not needed.
+
+### 🗓️ [05/22/2023] ULIP - Objaverse and ShapeNet Triplets Uploaded  
+📁 [GCP bucket here](https://console.cloud.google.com/storage/browser/sfr-ulip-code-release-research)
+
+### 🗓️ [05/14/2023] ULIP-2 Released!
+
+### 🗓️ [02/28/2023] ULIP Accepted to CVPR 2023 🔥🔥🔥
+
 
 # Animation
 ![Pipeline Animation](assets/pipeline_8s_timing.gif)
