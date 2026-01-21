@@ -25,19 +25,19 @@ If you're unable to download from the GCP bucket, please switch to Hugging Face 
 ---
 
 ### 🗓️ [06/17/2024] [ULIP-2: Towards Scalable Multimodal Pre-training For 3D Understanding](https://arxiv.org/abs/2305.08275)
-📦 The latest **CVPR 2024** version of the ensembled pre-trained model (10k xyzrgb points) is now available [here](https://storage.cloud.google.com/sfr-ulip-code-release-research/ULIP-2/models/ULIP-2-PointBERT-10k-colored-pc-pretrained.pt)
+📦 The latest **CVPR 2024** version of the ensembled pre-trained model (10k xyzrgb points) is now available 👉 [**https://huggingface.co/datasets/SFXX/ulip**](https://huggingface.co/datasets/SFXX/ulip/tree/main)
 
 ### 🗓️ [02/26/2024] ULIP-2 Accepted to CVPR 2024 🎉
 
 ### 🗓️ [06/09/2023] PointBERT ULIP-2 Model Released  
-🔗 [Download here](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/pointbert_ULIP-2.pt)
+👉 [**https://huggingface.co/datasets/SFXX/ulip**](https://huggingface.co/datasets/SFXX/ulip/tree/main)
 
 ### 🗓️ [06/09/2023] Smaller Version of ULIP - ShapeNet Triplets Released  
-A 420GB subset is available at [this GCP link](https://console.cloud.google.com/storage/browser/sfr-ulip-code-release-research/shapenet-55), under the `only_rgb_depth_images` folder — the exact subset used by ULIP.  
+A 420GB subset is available at 👉 [**https://huggingface.co/datasets/SFXX/ulip**](https://huggingface.co/datasets/SFXX/ulip/tree/main), under the `only_rgb_depth_images` folder — the exact subset used by ULIP.  
 Skip downloading the full rendered_images (~1TB) if not needed.
 
 ### 🗓️ [05/22/2023] ULIP - Objaverse and ShapeNet Triplets Uploaded  
-📁 [GCP bucket here](https://console.cloud.google.com/storage/browser/sfr-ulip-code-release-research)
+👉 [**https://huggingface.co/datasets/SFXX/ulip**](https://huggingface.co/datasets/SFXX/ulip/tree/main)
 
 ### 🗓️ [05/14/2023] ULIP-2 Released!
 
@@ -76,7 +76,7 @@ bash update.sh \
 bash install.sh \
 ```
 ## [Download datasets and initialize models, put them in the right paths.]
-Download the used datasets and initialize models from [here](https://console.cloud.google.com/storage/browser/sfr-ulip-code-release-research). For now, you ONLY need to download "initialize_models", "modelnet40_normal_resampled", and "shapenet-55". You might need a gmail account to access it.\
+Download the used datasets and initialize models from 👉 [**https://huggingface.co/datasets/SFXX/ulip**](https://huggingface.co/datasets/SFXX/ulip/tree/main). For now, you ONLY need to download "initialize_models", "modelnet40_normal_resampled", and "shapenet-55". You might need a gmail account to access it.\
 After you download the datasets and initialize models, you can choose one of the following options: \
 (1) Put it in or do a soft link to the data folder, by default the data folder should have the following structure:
 ```
@@ -141,19 +141,19 @@ ULIP-1 models, Zero-shot classification on ModelNet40, 8k points pre-train, 8k p
 
 | model                                                                                                                                                                   | top1 | top5 |
 |-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------|------|
-| [Pointnet2(ssg)](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/checkpoint_pointnet2_ssg.pt?authuser=0) | 57.7 | 78.9 |
-| [PointMLP](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/checkpoint_pointmlp.pt?authuser=0)            | 60.0 | 79.4 |
-| [PointBERT](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/checkpoint_pointbert.pt?authuser=0)          | 60.3 | 84.0 |
-| [PointNeXt](https://storage.cloud.google.com/sfr-ulip-code-release-research/pretrained_models/ckpt_zero-sho_classification/checkpoint_pointnext.pt?authuser=0)          | 56.2 | 77.0 |
+| [Pointnet2(ssg)]| 57.7 | 78.9 |
+| [PointMLP]            | 60.0 | 79.4 |
+| [PointBERT]         | 60.3 | 84.0 |
+| [PointNeXt]        | 56.2 | 77.0 |
 
-ULIP-2 models, pre-trained with 10k xyzrgb point clouds on the ensembled ULIP-Objaverse + ULIP-ShapeNet, check the [google drive]([sfr-ulip-code-release-research/ULIP-Objaverse_triplets](https://console.cloud.google.com/storage/browser/sfr-ulip-code-release-research/ULIP-Objaverse_triplets?pageState=(%22StorageObjectListTable%22:(%22f%22:%22%255B%255D%22)))).
+ULIP-2 models, pre-trained with 10k xyzrgb point clouds on the ensembled ULIP-Objaverse + ULIP-ShapeNet, check the 👉 [**https://huggingface.co/datasets/SFXX/ulip**](https://huggingface.co/datasets/SFXX/ulip/tree/main)
 
 Note that, ULIP-2 models are improved in the CVPR2024 version compared to the initial arxiv release, please refer to the new one for matching the cvpr2024 version numbers.
 
 | model                                                                                                                                                                   | Objaverse-top1 | Objaverse-top5 | Modelnet40-top1 | Modelnet40-top5 |
 |-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------|------| - | - |
 |openshape-pointbert-10kxyzrgb-ensembled-objavserse-shapenet-abo-3d_future| 46.8 | 77.0 | 84.4 | 98.0 |
-| [ULIP2-PointBERT-10kxyzrgb-ensembled-objaverse-shapenet](https://storage.cloud.google.com/sfr-ulip-code-release-research/ULIP-2/models/ULIP-2-PointBERT-10k-colored-pc-pretrained.pt) | 50.6 | 79.1 | 84.7 | 97.1 |
+| [ULIP2-PointBERT-10kxyzrgb-ensembled-objaverse-shapenet]👉 [**https://huggingface.co/datasets/SFXX/ulip**](https://huggingface.co/datasets/SFXX/ulip/tree/main) | 50.6 | 79.1 | 84.7 | 97.1 |
 
 # License and term of use for the released pre-train datasets
 The code is under https://github.com/salesforce/ULIP/blob/main/LICENSE.txt.
