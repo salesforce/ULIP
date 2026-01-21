@@ -363,8 +363,9 @@ def pointMLPElite(**kwargs) -> Model:
                    k_neighbors=[24,24,24,24], reducers=[2, 2, 2, 2], **kwargs)
 
 if __name__ == '__main__':
-    data = torch.rand(2, 3, 1024)
+    # Sample input data
+    data = torch.rand(5, 1024, 3) # 5 point clouds with 1024 points each
     print("===> testing pointMLP ...")
     model = pointMLP()
     out = model(data)
-    print(out.shape)
+    print(out.shape) # Output: torch.Size([5, 256])
