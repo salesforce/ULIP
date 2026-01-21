@@ -1,4 +1,4 @@
-test_pointbert.sh#!/bin/bash
+#!/bin/bash
 
 if [ -z "$1" ]; then
 echo "Please provide a *.pt file as input"
