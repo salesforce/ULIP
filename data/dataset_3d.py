@@ -541,7 +541,7 @@ class Objaverse_Lvis_Colored(data.Dataset):
 
 import collections.abc as container_abcs
 int_classes = int
-from torch._six import string_classes
+string_classes = str
 
 import re
 default_collate_err_msg_format = (
